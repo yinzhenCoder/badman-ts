@@ -52,4 +52,21 @@ export default class IoredisHashCommands  implements RedisHashCommands{
 		return n===0?false:true;
 	}
 
+	 /**
+   * 设置哈希并设置过期时间（毫秒）
+   * @param key 哈希键
+   * @param entry 哈希字段和对应的值
+   * @param ttl 毫秒级过期时间
+   * @returns 返回操作结果
+   */
+  async hashSetWithExpiryMs(key: RedisKeyType, entry: Map<RedisValueType, RedisValueType> | object, ttl: number): Promise<number> {
+    // 设置哈希
+    const result = await this.connection.redisClientInstance().hset(key, entry);
+
+    // 设置过期时间（毫秒）
+    await this.connection.redisClientInstance().pexpire(key, ttl);
+
+    return result;
+  }
+
 }
